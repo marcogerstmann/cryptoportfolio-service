@@ -1,6 +1,6 @@
 spring:
   application:
-    name: cruptoportfolio-service
+    name: cryptoportfolio-service
 
   datasource:
     url: ${CRYPTOPORTFOLIO_DB_URL:jdbc:mysql://localhost:3307/cryptoportfolio}
@@ -32,3 +32,10 @@ management:
       base-path: /api/mgmt
       exposure:
         include: flyway, health, info, metrics
+
+# API documentation / Swagger
+springdoc:
+  swagger-ui:
+    display-request-duration: true
+    operationsSorter: method
+    disable-swagger-default-url: true
