@@ -5,7 +5,6 @@ import com.marcogerstmann.cryptoportfolio.service.enums.CoinStorageType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -24,7 +23,7 @@ public class CoinStorage extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private CoinStorageType type;
 
-    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
+    @ManyToOne
     private Coin coin;
 }
