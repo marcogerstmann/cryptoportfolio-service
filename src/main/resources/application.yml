@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: cruptoportfolio-service
+
+  datasource:
+    url: ${CRYPTOPORTFOLIO_DB_URL:jdbc:mysql://localhost:3307/cryptoportfolio}
+    username: ${CRYPTOPORTFOLIO_DB_USERNAME:cryptouser}
+    password: ${CRYPTOPORTFOLIO_DB_PASSWORD:cryptopass}
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+
+  flyway:
+    out-of-order: true
+    baselineOnMigrate: true
+
+server:
+  port: 8080
+  servlet:
+    context-path: /cryptoportfolio-service
+
+# Actuator
+management:
+  server:
+    port: 9080
+  endpoints:
+    web:
+      base-path: /api/mgmt
+      exposure:
+        include: flyway, health, info, metrics
