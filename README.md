@@ -4,12 +4,13 @@ Backend for the crypto portfolio app.
 
 ## Environment variables to set
 
-| Variable Name               | Example Value                               | Description                                   |
-|-----------------------------|---------------------------------------------|-----------------------------------------------|
-| CRYPTOPORTFOLIO_DB_URL      | jdbc:mysql://localhost:3307/cryptoportfolio | URL pointing to the MySQL database            |
-| CRYPTOPORTFOLIO_DB_USERNAME | cryptouser                                  | Database username to connect with             |
-| CRYPTOPORTFOLIO_DB_PASSWORD | cryptopass                                  | Password of the database user to connect with |
-| COINMARKETCAP_API_KEY       | b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c        | Personal API key of CoinMarketCap             |
+| Variable Name                | Example Value                               | Description                                               |
+|------------------------------|---------------------------------------------|-----------------------------------------------------------|
+| CRYPTOPORTFOLIO_DB_URL       | jdbc:mysql://localhost:3307/cryptoportfolio | URL pointing to the MySQL database                        |
+| CRYPTOPORTFOLIO_DB_USERNAME  | cryptouser                                  | Database username to connect with                         |
+| CRYPTOPORTFOLIO_DB_PASSWORD  | cryptopass                                  | Password of the database user to connect with             |
+| COINMARKETCAP_API_KEY        | b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c        | Personal API key of CoinMarketCap                         |
+| COINMARKETCAP_USE_PRODUCTION | true                                        | If not set or false: use sandbox; if true: use production |
 
 ## Local development setup
 

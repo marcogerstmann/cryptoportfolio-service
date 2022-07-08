@@ -1,5 +1,7 @@
 package com.marcogerstmann.cryptoportfolio.service.service.impl;
 
+import static com.marcogerstmann.cryptoportfolio.service.util.CustomHttpHeaders.X_CMC_PRO_API_KEY;
+
 import com.marcogerstmann.cryptoportfolio.service.dto.CoinMarketValueDto;
 import com.marcogerstmann.cryptoportfolio.service.service.CoinMarketValueService;
 import java.util.HashMap;
@@ -19,10 +21,14 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class CoinMarketValueServiceImpl implements CoinMarketValueService {
 
-    @Value("${external-api.coin-market-value.coinmarketcap.sandbox.url}")
+    @Value("#{'${external-api.coinmarketcap.use-production}' == 'true'"
+        + "? '${external-api.coinmarketcap.pro.url}'"
+        + ": '${external-api.coinmarketcap.sandbox.url}'}")
     private String baseUrl;
 
-    @Value("${external-api.coin-market-value.coinmarketcap.sandbox.api-key}")
+    @Value("#{'${external-api.coinmarketcap.use-production}' == 'true'"
+        + "? '${external-api.coinmarketcap.pro.api-key}'"
+        + ": '${external-api.coinmarketcap.sandbox.api-key}'}")
     private String apiKey;
 
     @Override
@@ -56,7 +62,7 @@ public class CoinMarketValueServiceImpl implements CoinMarketValueService {
     private HttpHeaders buildRequestHeaders() {
         final HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.setContentType(MediaType.APPLICATION_JSON);
-        requestHeaders.set("X-CMC_PRO_API_KEY", apiKey);
+        requestHeaders.set(X_CMC_PRO_API_KEY, apiKey);
         return requestHeaders;
     }
 
