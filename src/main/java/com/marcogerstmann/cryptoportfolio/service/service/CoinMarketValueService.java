@@ -1,10 +1,10 @@
 package com.marcogerstmann.cryptoportfolio.service.service;
 
-import com.marcogerstmann.cryptoportfolio.service.dto.CoinMarketValueDTO;
-import java.util.List;
+import com.marcogerstmann.cryptoportfolio.service.api.model.CoinQuote;
+import java.util.Map;
 import java.util.Set;
 
 public interface CoinMarketValueService {
 
-    List<CoinMarketValueDTO> fetchCoinValues(Set<String> coinCodes);
+    Map<String, CoinQuote> getCurrentCoinQuotes(Set<String> coinCodes);
 }

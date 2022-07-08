@@ -1,12 +1,9 @@
 package com.marcogerstmann.cryptoportfolio.service.service.impl;
 
-import static java.util.Collections.emptyList;
-
-import com.marcogerstmann.cryptoportfolio.service.api.coinmarketcap.service.CoinMarketCapService;
-import com.marcogerstmann.cryptoportfolio.service.dto.CoinMarketValueDTO;
-import com.marcogerstmann.cryptoportfolio.service.api.coinmarketcap.model.CmcQuoteResponse;
+import com.marcogerstmann.cryptoportfolio.service.api.facade.ExternalDataProviderFacade;
+import com.marcogerstmann.cryptoportfolio.service.api.model.CoinQuote;
 import com.marcogerstmann.cryptoportfolio.service.service.CoinMarketValueService;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,16 +12,10 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CoinMarketValueServiceImpl implements CoinMarketValueService {
 
-    private final CoinMarketCapService coinMarketCapService;
+    private final ExternalDataProviderFacade externalDataProvider;
 
     @Override
-    public List<CoinMarketValueDTO> fetchCoinValues(final Set<String> coinCodes) {
-        final CmcQuoteResponse cmcQuotes = coinMarketCapService.fetchCoinQuotes(coinCodes);
-        return toCoinMarketValues(cmcQuotes);
-    }
-
-    private List<CoinMarketValueDTO> toCoinMarketValues(final CmcQuoteResponse cmcQuotes) {
-        // TODO CP-9 :: map CoinMarketCap response to list of DTOs
-        return emptyList();
+    public Map<String, CoinQuote> getCurrentCoinQuotes(final Set<String> coinCodes) {
+        return externalDataProvider.getCurrentCoinQuotes(coinCodes);
     }
 }
