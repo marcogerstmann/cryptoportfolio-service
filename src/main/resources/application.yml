@@ -23,7 +23,6 @@ server:
   servlet:
     context-path: /cryptoportfolio-service
 
-# Actuator
 management:
   server:
     port: 9080
@@ -33,9 +32,18 @@ management:
       exposure:
         include: flyway, health, info, metrics
 
-# API documentation / Swagger
 springdoc:
   swagger-ui:
     display-request-duration: true
     operationsSorter: method
     disable-swagger-default-url: true
+
+api:
+  coinmarketcap:
+    use-production: ${COINMARKETCAP_USE_PRODUCTION:false}
+    pro:
+      url: https://pro-api.coinmarketcap.com
+      api-key: ${COINMARKETCAP_API_KEY}
+    sandbox:
+      url: https://sandbox-api.coinmarketcap.com
+      api-key: b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c
