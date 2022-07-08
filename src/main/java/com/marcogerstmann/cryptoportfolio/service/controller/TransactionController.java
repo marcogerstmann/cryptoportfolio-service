@@ -1,6 +1,6 @@
 package com.marcogerstmann.cryptoportfolio.service.controller;
 
-import com.marcogerstmann.cryptoportfolio.service.dto.TransactionDto;
+import com.marcogerstmann.cryptoportfolio.service.dto.TransactionDTO;
 import com.marcogerstmann.cryptoportfolio.service.entity.Transaction;
 import com.marcogerstmann.cryptoportfolio.service.mapper.TransactionMapper;
 import com.marcogerstmann.cryptoportfolio.service.service.TransactionService;
@@ -20,7 +20,7 @@ public class TransactionController {
     private final TransactionMapper transactionMapper;
 
     @GetMapping
-    public List<TransactionDto> getAllCoins() {
+    public List<TransactionDTO> getAllCoins() {
         final List<Transaction> transactions = transactionService.getAll();
         return transactionMapper.toDto(transactions);
     }

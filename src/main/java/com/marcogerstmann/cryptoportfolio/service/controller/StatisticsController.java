@@ -1,6 +1,6 @@
 package com.marcogerstmann.cryptoportfolio.service.controller;
 
-import com.marcogerstmann.cryptoportfolio.service.dto.CoinMarketValueDto;
+import com.marcogerstmann.cryptoportfolio.service.dto.CoinMarketValueDTO;
 import com.marcogerstmann.cryptoportfolio.service.service.CoinMarketValueService;
 import java.util.Collections;
 import lombok.AllArgsConstructor;
@@ -16,8 +16,8 @@ public class StatisticsController {
     private final CoinMarketValueService coinMarketValueService;
 
     @GetMapping
-    public CoinMarketValueDto getOverallStatistics() {
-        final CoinMarketValueDto coinMarketValue = coinMarketValueService.fetchCoinValues(Collections.emptySet());
+    public CoinMarketValueDTO getOverallStatistics() {
+        final CoinMarketValueDTO coinMarketValue = coinMarketValueService.fetchCoinValues(Collections.emptySet());
         return coinMarketValue;
     }
 }

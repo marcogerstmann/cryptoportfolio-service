@@ -2,7 +2,7 @@ package com.marcogerstmann.cryptoportfolio.service.service.impl;
 
 import static com.marcogerstmann.cryptoportfolio.service.util.CustomHttpHeaders.X_CMC_PRO_API_KEY;
 
-import com.marcogerstmann.cryptoportfolio.service.dto.CoinMarketValueDto;
+import com.marcogerstmann.cryptoportfolio.service.dto.CoinMarketValueDTO;
 import com.marcogerstmann.cryptoportfolio.service.service.CoinMarketValueService;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,7 +32,7 @@ public class CoinMarketValueServiceImpl implements CoinMarketValueService {
     private String apiKey;
 
     @Override
-    public CoinMarketValueDto fetchCoinValues(Set<String> coinCodes) {
+    public CoinMarketValueDTO fetchCoinValues(Set<String> coinCodes) {
         final RestTemplate restTemplate = new RestTemplate();
 
         final String url = buildUrl();
@@ -40,7 +40,7 @@ public class CoinMarketValueServiceImpl implements CoinMarketValueService {
         final HttpHeaders requestHeaders = buildRequestHeaders();
         final MultiValueMap<String, String> requestBody = buildRequestBody();
 
-        final HttpEntity<Object> requestEntity = new HttpEntity<>(requestBody, requestHeaders);
+        final HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(requestBody, requestHeaders);
         final ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.GET, requestEntity, Object.class, uriVariables);
 
         final Object body = response.getBody();
