@@ -1,6 +1,7 @@
 package com.marcogerstmann.cryptoportfolio.service.dto.coinmarketcap.quote;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,4 +13,16 @@ import lombok.NoArgsConstructor;
 public class CmcPriceQuoteDTO {
 
     private Double price;
+
+    @JsonProperty(value = "percent_change_1h")
+    private Double percentChange1h;
+
+    @JsonProperty(value = "percent_change_24h")
+    private Double percentChange24h;
+
+    @JsonProperty(value = "percent_change_7d")
+    private Double percentChange7d;
+
+    @JsonProperty(value = "percent_change_30d")
+    private Double percentChange30d;
 }

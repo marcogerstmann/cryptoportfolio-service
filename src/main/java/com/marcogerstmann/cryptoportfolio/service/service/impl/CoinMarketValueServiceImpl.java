@@ -4,6 +4,7 @@ import static com.marcogerstmann.cryptoportfolio.service.util.CustomHttpHeaders.
 
 import com.marcogerstmann.cryptoportfolio.service.dto.CoinMarketValueDTO;
 import com.marcogerstmann.cryptoportfolio.service.dto.coinmarketcap.quote.CmcQuoteResponseDTO;
+import com.marcogerstmann.cryptoportfolio.service.enums.FiatCurrency;
 import com.marcogerstmann.cryptoportfolio.service.service.CoinMarketValueService;
 import java.util.HashMap;
 import java.util.Map;
@@ -59,7 +60,7 @@ public class CoinMarketValueServiceImpl implements CoinMarketValueService {
     private Map<String, String> buildUriVariables() {
         final Map<String, String> uriVariables = new HashMap<>();
         uriVariables.put("symbol", "BTC,ETH");
-        uriVariables.put("convert", "EUR");
+        uriVariables.put("convert", FiatCurrency.EUR.name());
         return uriVariables;
     }
 

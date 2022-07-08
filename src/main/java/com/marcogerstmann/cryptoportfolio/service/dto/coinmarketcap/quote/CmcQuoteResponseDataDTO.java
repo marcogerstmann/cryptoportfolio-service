@@ -1,7 +1,8 @@
 package com.marcogerstmann.cryptoportfolio.service.dto.coinmarketcap.quote;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import java.util.LinkedHashMap;
+import com.marcogerstmann.cryptoportfolio.service.enums.FiatCurrency;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,8 @@ import lombok.NoArgsConstructor;
 public class CmcQuoteResponseDataDTO {
 
     private Integer id;
+    private String name;
     private String symbol;
     private String slug;
-    private LinkedHashMap<String, CmcPriceQuoteDTO> quote;
+    private Map<FiatCurrency, CmcPriceQuoteDTO> quote;
 }
