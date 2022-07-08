@@ -1,4 +1,4 @@
-package com.marcogerstmann.cryptoportfolio.service.dto.coinmarketcap.quote;
+package com.marcogerstmann.cryptoportfolio.service.api.coinmarketcap.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.marcogerstmann.cryptoportfolio.service.enums.FiatCurrency;
@@ -11,11 +11,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CmcQuoteResponseDataDTO {
+public class CmcQuoteResponseData {
 
     private Integer id;
     private String name;
     private String symbol;
     private String slug;
-    private Map<FiatCurrency, CmcPriceQuoteDTO> quote;
+    private Map<FiatCurrency, CmcPriceQuote> quote;
 }

@@ -1,4 +1,4 @@
-package com.marcogerstmann.cryptoportfolio.service.dto.coinmarketcap.quote;
+package com.marcogerstmann.cryptoportfolio.service.api.coinmarketcap.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CmcPriceQuoteDTO {
+public class CmcPriceQuote {
 
     private Double price;
 

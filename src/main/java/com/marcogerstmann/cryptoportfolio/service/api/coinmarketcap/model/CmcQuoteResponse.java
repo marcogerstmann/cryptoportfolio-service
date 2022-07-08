@@ -1,4 +1,4 @@
-package com.marcogerstmann.cryptoportfolio.service.dto.coinmarketcap.quote;
+package com.marcogerstmann.cryptoportfolio.service.api.coinmarketcap.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.Map;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CmcQuoteResponseDTO {
+public class CmcQuoteResponse {
 
-    private Map<String, CmcQuoteResponseDataDTO> data;
+    private Map<String, CmcQuoteResponseData> data;
 }
