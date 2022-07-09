@@ -1,12 +1,16 @@
 package com.marcogerstmann.cryptoportfolio.service.dto;
 
+import java.math.BigDecimal;
 import javax.money.MonetaryAmount;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
-@AllArgsConstructor
+@Builder
 public class OverallPortfolioStatisticsDTO {
 
     private MonetaryAmount costBasis;
+    private MonetaryAmount currentPortfolioValue;
+    private MonetaryAmount differenceAbsolute;
+    private Double differencePercentage;
 }
