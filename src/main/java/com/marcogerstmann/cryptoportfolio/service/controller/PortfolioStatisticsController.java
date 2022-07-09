@@ -16,6 +16,6 @@ public class PortfolioStatisticsController {
 
     @GetMapping
     public OverallPortfolioStatisticsDTO getOverallPortfolioStatistics() {
-        return portfolioStatisticsService.getOverallPortfolioStatistics();
+        return portfolioStatisticsService.calculateOverallPortfolioStatistics();
     }
 }

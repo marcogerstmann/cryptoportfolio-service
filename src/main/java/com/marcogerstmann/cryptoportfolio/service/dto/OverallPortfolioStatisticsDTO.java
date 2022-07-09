@@ -1,5 +1,6 @@
 package com.marcogerstmann.cryptoportfolio.service.dto;
 
+import javax.money.MonetaryAmount;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -7,5 +8,5 @@ import lombok.Data;
 @AllArgsConstructor
 public class OverallPortfolioStatisticsDTO {
 
-    private String message;
+    private MonetaryAmount costBasis;
 }

@@ -4,5 +4,5 @@ import com.marcogerstmann.cryptoportfolio.service.dto.OverallPortfolioStatistics
 
 public interface PortfolioStatisticsService {
 
-    OverallPortfolioStatisticsDTO getOverallPortfolioStatistics();
+    OverallPortfolioStatisticsDTO calculateOverallPortfolioStatistics();
 }
