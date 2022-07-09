@@ -92,8 +92,11 @@ public class PortfolioStatisticsServiceImpl implements PortfolioStatisticsServic
     }
 
     private BigDecimal calculateDifferencePercentage(final MonetaryAmount costBasis, final MonetaryAmount currentValue) {
-        // TODO CP-3 :: Calculate relative difference
-        return BigDecimal.TEN;
+        final double cost = costBasis.getNumber().doubleValue();
+        final double current = currentValue.getNumber().doubleValue();
+        final double differencePercentage = (current - cost) / cost;
+
+        return BigDecimal.valueOf(differencePercentage * 100);
     }
 
     private MonetaryAmount calculateCostBasis(final List<CoinPortfolioStatisticsDTO> coinStatistics) {
