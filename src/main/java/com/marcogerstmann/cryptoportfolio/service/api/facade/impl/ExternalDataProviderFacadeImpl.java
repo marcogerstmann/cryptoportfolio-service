@@ -6,8 +6,7 @@ import com.marcogerstmann.cryptoportfolio.service.api.coinmarketcap.service.Coin
 import com.marcogerstmann.cryptoportfolio.service.api.facade.ExternalDataProviderFacade;
 import com.marcogerstmann.cryptoportfolio.service.api.model.CoinQuote;
 import com.marcogerstmann.cryptoportfolio.service.enums.FiatCurrency;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.javamoney.moneta.Money;
@@ -20,20 +19,21 @@ public class ExternalDataProviderFacadeImpl implements ExternalDataProviderFacad
     private final CoinMarketCapService coinMarketCapService;
 
     @Override
-    public Map<String, CoinQuote> getCurrentCoinQuotes(final Set<String> coinCodes) {
+    public List<CoinQuote> getCurrentCoinQuotes(final Set<String> coinCodes) {
         final CmcQuoteResponse cmcQuoteResponse = coinMarketCapService.fetchCoinQuotes(coinCodes);
-        return toCoinQuotesMap(cmcQuoteResponse);
+        return toCoinQuotesList(cmcQuoteResponse);
     }
 
-    private Map<String, CoinQuote> toCoinQuotesMap(final CmcQuoteResponse cmcQuoteResponse) {
-        final HashMap<String, CoinQuote> coinQuotesMap = new HashMap<>();
-        cmcQuoteResponse.getData().forEach((key, value) -> coinQuotesMap.put(key, toCoinQuote(value)));
-        return coinQuotesMap;
+    private List<CoinQuote> toCoinQuotesList(final CmcQuoteResponse cmcQuoteResponse) {
+        return cmcQuoteResponse.getData().values().stream()
+            .map(this::toCoinQuote)
+            .toList();
     }
 
     private CoinQuote toCoinQuote(final CmcQuoteResponseData cmcQuoteResponseData) {
         return new CoinQuote(
             cmcQuoteResponseData.getSymbol(),
+            cmcQuoteResponseData.getName(),
             Money.of(cmcQuoteResponseData.getQuote().get(FiatCurrency.EUR).getPrice(), FiatCurrency.EUR.name())
         );
     }
