@@ -32,14 +32,18 @@ public class TransactionServiceImpl implements TransactionService {
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
 
-        // TODO CP-15 :: What to do with SELL and TRANSFER transaction types?
+        // TODO CP-18 :: Handle TRANSFER transacion type
+        // TODO CP-19 :: Handle SWAP transacion type
+        // TODO CP-15 :: Handle SELL transacion type
 
         return Money.of(costBasis, FiatCurrency.EUR.name());
     }
 
     @Override
     public BigDecimal calculateShares(final List<Transaction> transactions) {
-        // TODO CP-15 :: What to do with SELL and TRANSFER transaction types?
+        // TODO CP-18 :: Handle TRANSFER transacion type
+        // TODO CP-19 :: Handle SWAP transacion type
+        // TODO CP-15 :: Handle SELL transacion type
         return transactions.stream()
             .filter(transaction -> BUY.equals(transaction.getType()))
             .map(Transaction::getCoinAmount)
