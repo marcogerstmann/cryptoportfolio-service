@@ -7,10 +7,15 @@ import lombok.Data;
 
 @Data
 @Builder
-public class OverallPortfolioStatisticsDTO {
+public class CoinPortfolioStatisticsDTO {
 
+    private String coinCode;
+    private String coinName;
+    private MonetaryAmount currentMarketPrice;
+    private BigDecimal shares;
     private MonetaryAmount costBasis;
-    private MonetaryAmount currentPortfolioValue;
+    private MonetaryAmount currentValue;
+    private MonetaryAmount averageInvestedPrice;
     private MonetaryAmount differenceAbsolute;
     private BigDecimal differencePercentage;
 }

@@ -8,6 +8,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class CoinQuote {
 
-    private String symbol;
+    private String coinCode;
+    private String coinName;
     private MonetaryAmount price;
 }
