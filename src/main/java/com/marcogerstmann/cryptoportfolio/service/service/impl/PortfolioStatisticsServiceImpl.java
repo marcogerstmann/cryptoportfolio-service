@@ -4,6 +4,7 @@ import com.marcogerstmann.cryptoportfolio.service.api.model.CoinQuote;
 import com.marcogerstmann.cryptoportfolio.service.dto.CoinPortfolioStatisticsDTO;
 import com.marcogerstmann.cryptoportfolio.service.dto.OverallPortfolioStatisticsDTO;
 import com.marcogerstmann.cryptoportfolio.service.entity.Transaction;
+import com.marcogerstmann.cryptoportfolio.service.enums.FiatCurrency;
 import com.marcogerstmann.cryptoportfolio.service.service.CoinMarketValueService;
 import com.marcogerstmann.cryptoportfolio.service.service.CoinService;
 import com.marcogerstmann.cryptoportfolio.service.service.PortfolioStatisticsService;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 import javax.money.MonetaryAmount;
 import lombok.RequiredArgsConstructor;
+import org.javamoney.moneta.Money;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,25 +27,19 @@ public class PortfolioStatisticsServiceImpl implements PortfolioStatisticsServic
 
     @Override
     public OverallPortfolioStatisticsDTO getOverallPortfolioStatistics() {
-        // TODO CP-3 :: Do calculations based on coin statistics
         final List<CoinPortfolioStatisticsDTO> coinStatistics = getCoinPortolioStatistics();
-        return null;
 
-//        final Set<String> coinCodes = coinService.getCodes();
-//        final Map<String, CoinQuote> coinQuotes = coinMarketValueService.getCurrentCoinQuotes(coinCodes);
-//        final List<Transaction> transactions = transactionService.getAll();
-//
-//        final MonetaryAmount costBasis = calculateCostBasis(transactions);
-//        final MonetaryAmount currentPortfolioValue = calculateCurrentPortfolioValue(transactions, coinQuotes);
-//        final MonetaryAmount differenceAbsolute = calculateDifferenceAbsolute(costBasis, currentPortfolioValue);
-//        final Double differenceRelative = calculateDifferenceRelative(costBasis, currentPortfolioValue);
-//
-//        return OverallPortfolioStatisticsDTO.builder()
-//            .costBasis(costBasis)
-//            .currentPortfolioValue(currentPortfolioValue)
-//            .differenceAbsolute(differenceAbsolute)
-//            .differencePercentage(differenceRelative)
-//            .build();
+        final MonetaryAmount costBasis = calculateCostBasis(coinStatistics);
+        final MonetaryAmount portfolioValue = calculatePortfolioValue(coinStatistics);
+        final MonetaryAmount differenceAbsolute = calculateDifferenceAbsolute(costBasis, portfolioValue);
+        final BigDecimal differencePercentage = calculateDifferencePercentage(costBasis, portfolioValue);
+
+        return OverallPortfolioStatisticsDTO.builder()
+            .costBasis(costBasis)
+            .currentPortfolioValue(portfolioValue)
+            .differenceAbsolute(differenceAbsolute)
+            .differencePercentage(differencePercentage)
+            .build();
     }
 
     @Override
@@ -98,5 +94,19 @@ public class PortfolioStatisticsServiceImpl implements PortfolioStatisticsServic
     private BigDecimal calculateDifferencePercentage(final MonetaryAmount costBasis, final MonetaryAmount currentValue) {
         // TODO CP-3 :: Calculate relative difference
         return BigDecimal.TEN;
+    }
+
+    private MonetaryAmount calculateCostBasis(final List<CoinPortfolioStatisticsDTO> coinStatistics) {
+        return coinStatistics.stream()
+            .map(CoinPortfolioStatisticsDTO::getCostBasis)
+            .reduce(MonetaryAmount::add)
+            .orElse(Money.of(0, FiatCurrency.EUR.name()));
+    }
+
+    private MonetaryAmount calculatePortfolioValue(final List<CoinPortfolioStatisticsDTO> coinStatistics) {
+        return coinStatistics.stream()
+            .map(CoinPortfolioStatisticsDTO::getCurrentValue)
+            .reduce(MonetaryAmount::add)
+            .orElse(Money.of(0, FiatCurrency.EUR.name()));
     }
 }
