@@ -18,15 +18,14 @@ CREATE TABLE coin_storage
 
 CREATE TABLE transaction
 (
-    `id`                   BIGINT(20)                       NOT NULL AUTO_INCREMENT,
-    `date`                 DATETIME                         NOT NULL,
-    `type`                 ENUM ('BUY', 'SELL', 'TRANSFER') NOT NULL,
+    `id`                   BIGINT(20)                               NOT NULL AUTO_INCREMENT,
+    `date`                 DATETIME                                 NOT NULL,
+    `type`                 ENUM ('BUY', 'SELL', 'TRANSFER', 'SWAP') NOT NULL,
     `from_coin_storage_id` BIGINT(20),
     `to_coin_storage_id`   BIGINT(20),
-    `coin_id`              BIGINT(20)                       NOT NULL,
-    `fiat_amount`          DECIMAL(19, 4)                   NOT NULL,
-    `coin_amount`          DECIMAL(27, 18)                  NOT NULL,
-    `coin_fiat_value`      DECIMAL(19, 4)                   NOT NULL,
+    `coin_id`              BIGINT(20)                               NOT NULL,
+    `fiat_amount`          DECIMAL(19, 4),
+    `coin_amount`          DECIMAL(27, 18),
     `fee_fiat_amount`      DECIMAL(19, 4),
     `fee_coin_amount`      DECIMAL(27, 18),
     `comment`              TEXT,

@@ -36,17 +36,11 @@ public class Transaction extends BaseEntity {
     @ManyToOne
     private Coin coin;
 
-    @NotNull
     @PositiveOrZero
     private BigDecimal fiatAmount;
 
-    @NotNull
     @PositiveOrZero
     private BigDecimal coinAmount;
-
-    @NotNull
-    @PositiveOrZero
-    private BigDecimal coinFiatValue;
 
     @PositiveOrZero
     private BigDecimal feeFiatAmount;
