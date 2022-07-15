@@ -8,6 +8,7 @@ import com.marcogerstmann.cryptoportfolio.service.repository.TransactionReposito
 import com.marcogerstmann.cryptoportfolio.service.service.TransactionService;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 import javax.money.MonetaryAmount;
 import lombok.RequiredArgsConstructor;
 import org.javamoney.moneta.Money;
@@ -25,29 +26,62 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public MonetaryAmount calculateCostBasis(final List<Transaction> transactions) {
-        final BigDecimal costBasis = transactions.stream()
+    public MonetaryAmount calculateCostBasis(final List<Transaction> transactions, final String coinCode) {
+        final List<Transaction> coinTransactions = filterTransactionsByCoin(transactions, coinCode);
+        final MonetaryAmount totalFiatBuyAmount = getTotalFiatBuyAmount(coinTransactions);
+        final MonetaryAmount totalFiatFeeAmount = getTotalFiatFeeAmount(coinTransactions);
+
+        return totalFiatBuyAmount.add(totalFiatFeeAmount);
+    }
+
+    private MonetaryAmount getTotalFiatBuyAmount(final List<Transaction> transactions) {
+        final BigDecimal totalBuy = transactions.stream()
             .filter(transaction -> BUY.equals(transaction.getType()))
             .map(Transaction::getFiatAmount)
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
 
-        // TODO CP-18 :: Handle TRANSFER transacion type
-        // TODO CP-19 :: Handle SWAP transacion type
-        // TODO CP-15 :: Handle SELL transacion type
+        return Money.of(totalBuy, FiatCurrency.EUR.name());
+    }
 
-        return Money.of(costBasis, FiatCurrency.EUR.name());
+    private MonetaryAmount getTotalFiatFeeAmount(final List<Transaction> transactions) {
+        final BigDecimal totalFees = transactions.stream()
+            .map(Transaction::getFeeFiatAmount)
+            .filter(Objects::nonNull)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
+
+        return Money.of(totalFees, FiatCurrency.EUR.name());
     }
 
     @Override
-    public BigDecimal calculateShares(final List<Transaction> transactions) {
-        // TODO CP-18 :: Handle TRANSFER transacion type
-        // TODO CP-19 :: Handle SWAP transacion type
-        // TODO CP-15 :: Handle SELL transacion type
+    public BigDecimal calculateShares(final List<Transaction> transactions, final String coinCode) {
+        final List<Transaction> coinTransactions = filterTransactionsByCoin(transactions, coinCode);
+        final BigDecimal totalBuyCoinAmount = getTotalBuyCoinAmount(coinTransactions);
+        final BigDecimal totalFeeCoinAmount = getTotalFeeCoinAmount(coinTransactions);
+
+        return totalBuyCoinAmount.subtract(totalFeeCoinAmount);
+    }
+
+    private BigDecimal getTotalBuyCoinAmount(final List<Transaction> transactions) {
         return transactions.stream()
             .filter(transaction -> BUY.equals(transaction.getType()))
             .map(Transaction::getCoinAmount)
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
+    }
+
+    private BigDecimal getTotalFeeCoinAmount(final List<Transaction> transactions) {
+        return transactions.stream()
+            .map(Transaction::getFeeCoinAmount)
+            .filter(Objects::nonNull)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
+    }
+
+    private List<Transaction> filterTransactionsByCoin(final List<Transaction> transactions, final String coinCode) {
+        return transactions.stream()
+            .filter(transaction -> coinCode.equals(transaction.getCoin().getCode()))
+            .toList();
     }
 }
