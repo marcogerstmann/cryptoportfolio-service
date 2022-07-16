@@ -79,6 +79,9 @@ public class PortfolioStatisticsServiceImpl implements PortfolioStatisticsServic
     }
 
     private MonetaryAmount calculateAverageInvestedPrice(final MonetaryAmount costBasis, final BigDecimal shares) {
+        if (shares.compareTo(BigDecimal.ZERO) == 0) {
+            return costBasis;
+        }
         return costBasis.divide(shares);
     }
 
@@ -87,6 +90,10 @@ public class PortfolioStatisticsServiceImpl implements PortfolioStatisticsServic
     }
 
     private BigDecimal calculateDifferencePercentage(final MonetaryAmount costBasis, final MonetaryAmount currentValue) {
+        if (costBasis.isZero()) {
+            return BigDecimal.ZERO;
+        }
+
         final double cost = costBasis.getNumber().doubleValue();
         final double current = currentValue.getNumber().doubleValue();
         final double differencePercentage = (current - cost) / cost;
