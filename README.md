@@ -19,6 +19,20 @@ Backend for the crypto portfolio app.
 1. In the CLI navigate to root folder of this project
 2. Run `docker-compose -f docker-compose.develop.yml up`
 
+### Run all tests
+
+If SDKMAN is installed on the machine, run the following to switch to the right Java version:
+
+```
+sdk env
+```
+
+To execute the tests, run:
+
+```
+./gradlew clean test
+```
+
 ## API documentation
 
 Swagger URL: http://localhost:8080/cryptoportfolio-service/swagger-ui/index.html
