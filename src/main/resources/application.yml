@@ -38,6 +38,10 @@ springdoc:
     operationsSorter: method
     disable-swagger-default-url: true
 
+app:
+  cache:
+    enabled: false
+
 api:
   coinmarketcap:
     use-production: ${COINMARKETCAP_USE_PRODUCTION:false}
