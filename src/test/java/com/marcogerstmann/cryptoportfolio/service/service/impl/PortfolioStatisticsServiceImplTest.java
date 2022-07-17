@@ -8,6 +8,7 @@ import static org.mockito.BDDMockito.given;
 
 import com.marcogerstmann.cryptoportfolio.service.api.model.CoinQuote;
 import com.marcogerstmann.cryptoportfolio.service.dto.CoinPortfolioStatisticsDTO;
+import com.marcogerstmann.cryptoportfolio.service.dto.OverallPortfolioStatisticsDTO;
 import com.marcogerstmann.cryptoportfolio.service.entity.Coin;
 import com.marcogerstmann.cryptoportfolio.service.entity.Transaction;
 import com.marcogerstmann.cryptoportfolio.service.enums.FiatCurrency;
@@ -66,6 +67,66 @@ class PortfolioStatisticsServiceImplTest {
     }
 
     @Nested
+    @DisplayName("When getting overall portfolio statistics")
+    class GetOverallPortfolioStatistics {
+
+        @ParameterizedTest
+        @MethodSource("getOverallPortolioStatisticsParams")
+        @DisplayName("should create the expected result based on given transactions")
+        void getOverallPortfolioStatistics_should_create_the_expected_result(final List<Transaction> givenTransactions,
+            final OverallPortfolioStatisticsDTO expectedResult) {
+            // given
+            given(transactionServiceMock.getAll()).willReturn(givenTransactions);
+
+            // when
+            final OverallPortfolioStatisticsDTO actualResult = service.getOverallPortfolioStatistics();
+
+            // then
+            assertEquals(expectedResult, actualResult);
+        }
+
+        private static Stream<Arguments> getOverallPortolioStatisticsParams() {
+            return Stream.of(
+                buildNoTransactionsArguments(),
+                buildOneBuyTransactionNoFeesArguments()
+            );
+        }
+
+        private static Arguments buildNoTransactionsArguments() {
+            // given
+            final List<Transaction> givenTransactions = buildNoTransactions();
+
+            // expected result
+            final Money zeroMoney = Money.of(BigDecimal.ZERO, FiatCurrency.EUR.name());
+            final OverallPortfolioStatisticsDTO expectedResult = OverallPortfolioStatisticsDTO.builder()
+                .costBasis(zeroMoney)
+                .currentPortfolioValue(zeroMoney)
+                .differenceAbsolute(zeroMoney)
+                .differencePercentage(BigDecimal.ZERO)
+                .build();
+
+            return Arguments.of(givenTransactions, expectedResult);
+        }
+
+        private static Arguments buildOneBuyTransactionNoFeesArguments() {
+            // given
+            final BigDecimal buyFiatAmount = BigDecimal.valueOf(50000);
+            final BigDecimal buyCoinAmount = BigDecimal.ONE;
+            final List<Transaction> givenTransactions = buildOneBuyTransactionNoFees(buyFiatAmount, buyCoinAmount);
+
+            // excpected result
+            final OverallPortfolioStatisticsDTO expectedResult = OverallPortfolioStatisticsDTO.builder()
+                .costBasis(Money.of(buyFiatAmount, FiatCurrency.EUR.name()))
+                .currentPortfolioValue(COIN_PRICE)
+                .differenceAbsolute(Money.of(50000, FiatCurrency.EUR.name()))
+                .differencePercentage(BigDecimal.valueOf(100.0))
+                .build();
+
+            return Arguments.of(givenTransactions, expectedResult);
+        }
+    }
+
+    @Nested
     @DisplayName("When getting coin portfolio statistics")
     class GetCoinPortolioStatistics {
 
@@ -95,12 +156,9 @@ class PortfolioStatisticsServiceImplTest {
             );
         }
 
-        /**
-         * No transactions.
-         */
         private static Arguments buildNoTransactionsArguments() {
-            // given transations
-            final List<Transaction> givenTransactions = emptyList();
+            // given
+            final List<Transaction> givenTransactions = buildNoTransactions();
 
             // expected result
             final Money zeroMoney = Money.of(BigDecimal.ZERO, FiatCurrency.EUR.name());
@@ -121,23 +179,11 @@ class PortfolioStatisticsServiceImplTest {
             return Arguments.of(givenTransactions, expectedResult);
         }
 
-        /**
-         * One buy transaction without fees.
-         */
         private static Arguments buildOneBuyTransactionNoFeesArguments() {
-            // given values
+            // given
             final BigDecimal buyFiatAmount = BigDecimal.valueOf(50000);
             final BigDecimal buyCoinAmount = BigDecimal.ONE;
-
-            // given transactions
-            final List<Transaction> givenTransactions = List.of(
-                Transaction.builder()
-                    .coin(buildCoin())
-                    .type(TransactionType.BUY)
-                    .fiatAmount(buyFiatAmount)
-                    .coinAmount(buyCoinAmount)
-                    .build()
-            );
+            final List<Transaction> givenTransactions = buildOneBuyTransactionNoFees(buyFiatAmount, buyCoinAmount);
 
             // excpected result
             final List<CoinPortfolioStatisticsDTO> expectedResult = List.of(
@@ -157,25 +203,12 @@ class PortfolioStatisticsServiceImplTest {
             return Arguments.of(givenTransactions, expectedResult);
         }
 
-        /**
-         * One buy transaction with fees.
-         */
         private static Arguments buildOneBuyTransactionWithFeesArguments() {
-            // given values
+            // given
             final BigDecimal buyFiatAmount = BigDecimal.valueOf(49950);
             final BigDecimal feeFiatAmount = BigDecimal.valueOf(50);
             final BigDecimal buyCoinAmount = BigDecimal.ONE;
-
-            // given transactions
-            final List<Transaction> givenTransactions = List.of(
-                Transaction.builder()
-                    .coin(buildCoin())
-                    .type(TransactionType.BUY)
-                    .fiatAmount(buyFiatAmount)
-                    .coinAmount(buyCoinAmount)
-                    .feeFiatAmount(feeFiatAmount)
-                    .build()
-            );
+            final List<Transaction> givenTransactions = buildOneBuyTransactionWithFees(buyFiatAmount, feeFiatAmount, buyCoinAmount);
 
             // excpected result
             final List<CoinPortfolioStatisticsDTO> expectedResult = List.of(
@@ -195,32 +228,12 @@ class PortfolioStatisticsServiceImplTest {
             return Arguments.of(givenTransactions, expectedResult);
         }
 
-        /**
-         * Two buy transaction with fees.
-         */
         private static Arguments buildTwoBuyTransactionsWithFeesArguments() {
-            // given values
+            // given
             final BigDecimal buyFiatAmount = BigDecimal.valueOf(49950);
             final BigDecimal feeFiatAmount = BigDecimal.valueOf(50);
             final BigDecimal buyCoinAmount = BigDecimal.ONE;
-
-            // given transactions
-            final List<Transaction> givenTransactions = List.of(
-                Transaction.builder()
-                    .coin(buildCoin())
-                    .type(TransactionType.BUY)
-                    .fiatAmount(buyFiatAmount)
-                    .coinAmount(buyCoinAmount)
-                    .feeFiatAmount(feeFiatAmount)
-                    .build(),
-                Transaction.builder()
-                    .coin(buildCoin())
-                    .type(TransactionType.BUY)
-                    .fiatAmount(buyFiatAmount)
-                    .coinAmount(buyCoinAmount)
-                    .feeFiatAmount(feeFiatAmount)
-                    .build()
-            );
+            final List<Transaction> givenTransactions = buildTwoBuyTransactionsWithFees(buyFiatAmount, feeFiatAmount, buyCoinAmount);
 
             // excpected result
             final List<CoinPortfolioStatisticsDTO> expectedResult = List.of(
@@ -240,33 +253,15 @@ class PortfolioStatisticsServiceImplTest {
             return Arguments.of(givenTransactions, expectedResult);
         }
 
-        /**
-         * One buy + one transfer (exchange to wallet) transaction with fees.
-         */
         private static Arguments buildOneBuyAndOneTransferTransactionsWithFeesArguments() {
-            // given values
+            // given
             final BigDecimal buyFiatAmount = BigDecimal.valueOf(49950);
             final BigDecimal feeFiatAmount = BigDecimal.valueOf(50);
             final BigDecimal buyCoinAmount = BigDecimal.ONE;
             final BigDecimal transferCoinAmount = BigDecimal.valueOf(.9);
             final BigDecimal feeCoinAmount = BigDecimal.valueOf(.1);
-
-            // given transactions
-            final List<Transaction> givenTransactions = List.of(
-                Transaction.builder()
-                    .coin(buildCoin())
-                    .type(TransactionType.BUY)
-                    .fiatAmount(buyFiatAmount)
-                    .coinAmount(buyCoinAmount)
-                    .feeFiatAmount(feeFiatAmount)
-                    .build(),
-                Transaction.builder()
-                    .coin(buildCoin())
-                    .type(TransactionType.TRANSFER)
-                    .coinAmount(transferCoinAmount)
-                    .feeCoinAmount(feeCoinAmount)
-                    .build()
-            );
+            final List<Transaction> givenTransactions = buildOneBuyAndOneTransferTransactionsWithFees(buyFiatAmount, feeFiatAmount, buyCoinAmount,
+                transferCoinAmount, feeCoinAmount);
 
             // excpected result
             final BigDecimal buyPlusFeeAmount = buyFiatAmount.add(feeFiatAmount);
@@ -286,6 +281,88 @@ class PortfolioStatisticsServiceImplTest {
 
             return Arguments.of(givenTransactions, expectedResult);
         }
+    }
+
+    /**
+     * No transactions.
+     */
+    private static List<Transaction> buildNoTransactions() {
+        return emptyList();
+    }
+
+    /**
+     * One buy transaction without fees.
+     */
+    private static List<Transaction> buildOneBuyTransactionNoFees(final BigDecimal buyFiatAmount, final BigDecimal buyCoinAmount) {
+        return List.of(
+            Transaction.builder()
+                .coin(buildCoin())
+                .type(TransactionType.BUY)
+                .fiatAmount(buyFiatAmount)
+                .coinAmount(buyCoinAmount)
+                .build()
+        );
+    }
+
+    /**
+     * One buy transaction with fees.
+     */
+    private static List<Transaction> buildOneBuyTransactionWithFees(final BigDecimal buyFiatAmount, final BigDecimal feeFiatAmount,
+        final BigDecimal buyCoinAmount) {
+        return List.of(
+            Transaction.builder()
+                .coin(buildCoin())
+                .type(TransactionType.BUY)
+                .fiatAmount(buyFiatAmount)
+                .coinAmount(buyCoinAmount)
+                .feeFiatAmount(feeFiatAmount)
+                .build()
+        );
+    }
+
+    /**
+     * Two buy transaction with fees.
+     */
+    private static List<Transaction> buildTwoBuyTransactionsWithFees(final BigDecimal buyFiatAmount, final BigDecimal feeFiatAmount,
+        final BigDecimal buyCoinAmount) {
+        return List.of(
+            Transaction.builder()
+                .coin(buildCoin())
+                .type(TransactionType.BUY)
+                .fiatAmount(buyFiatAmount)
+                .coinAmount(buyCoinAmount)
+                .feeFiatAmount(feeFiatAmount)
+                .build(),
+            Transaction.builder()
+                .coin(buildCoin())
+                .type(TransactionType.BUY)
+                .fiatAmount(buyFiatAmount)
+                .coinAmount(buyCoinAmount)
+                .feeFiatAmount(feeFiatAmount)
+                .build()
+        );
+    }
+
+    /**
+     * One buy + one transfer (exchange to wallet) transaction with fees.
+     */
+    private static List<Transaction> buildOneBuyAndOneTransferTransactionsWithFees(final BigDecimal buyFiatAmount, final BigDecimal feeFiatAmount,
+        final BigDecimal buyCoinAmount, final BigDecimal transferCoinAmount, final BigDecimal feeCoinAmount) {
+        return List.of(
+            Transaction.builder()
+                .coin(buildCoin())
+                .type(TransactionType.BUY)
+                .fiatAmount(buyFiatAmount)
+                .coinAmount(buyCoinAmount)
+                .feeFiatAmount(feeFiatAmount)
+                .build(),
+            Transaction.builder()
+                .coin(buildCoin())
+                .type(TransactionType.TRANSFER)
+                .coinAmount(transferCoinAmount)
+                .feeCoinAmount(feeCoinAmount)
+                .build()
+        );
     }
 
     private static Coin buildCoin() {
