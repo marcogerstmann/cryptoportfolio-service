@@ -33,6 +33,8 @@ To execute the tests, run:
 ./gradlew clean test
 ```
 
+The JaCoCo test report can be found in `$buildDir/reports/jacoco/test`
+
 ## API documentation
 
 Swagger URL: http://localhost:8080/cryptoportfolio-service/swagger-ui/index.html
