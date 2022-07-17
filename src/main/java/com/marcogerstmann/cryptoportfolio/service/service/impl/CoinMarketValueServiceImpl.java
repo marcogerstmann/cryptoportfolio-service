@@ -4,7 +4,6 @@ import com.marcogerstmann.cryptoportfolio.service.api.facade.ExternalDataProvide
 import com.marcogerstmann.cryptoportfolio.service.api.model.CoinQuote;
 import com.marcogerstmann.cryptoportfolio.service.service.CoinMarketValueService;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
