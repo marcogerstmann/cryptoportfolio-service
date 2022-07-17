@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.javamoney.moneta.Money;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,6 +20,7 @@ public class ExternalDataProviderFacadeImpl implements ExternalDataProviderFacad
     private final CoinMarketCapService coinMarketCapService;
 
     @Override
+    @Cacheable("coinQuotes")
     public List<CoinQuote> getCurrentCoinQuotes(final Set<String> coinCodes) {
         final CmcQuoteResponse cmcQuoteResponse = coinMarketCapService.fetchCoinQuotes(coinCodes);
         return toCoinQuotesList(cmcQuoteResponse);
