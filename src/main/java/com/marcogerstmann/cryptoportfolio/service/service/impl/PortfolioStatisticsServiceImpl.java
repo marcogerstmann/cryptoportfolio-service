@@ -54,13 +54,8 @@ public class PortfolioStatisticsServiceImpl implements PortfolioStatisticsServic
     }
 
     private CoinPortfolioStatisticsDTO calculateCoinPortolioStatistics(final CoinQuote coinQuote, final List<Transaction> transactions) {
-        final List<Transaction> coinTransactions = transactions.stream()
-            .filter(transaction -> coinQuote.getCoinCode().equals(transaction.getCoin().getCode()))
-            .toList();
-
-        final MonetaryAmount currentMarketPrice = coinQuote.getPrice();
-        final MonetaryAmount costBasis = transactionService.calculateCostBasis(coinTransactions);
-        final BigDecimal shares = transactionService.calculateShares(coinTransactions);
+        final MonetaryAmount costBasis = transactionService.calculateCostBasis(transactions, coinQuote.getCoinCode());
+        final BigDecimal shares = transactionService.calculateShares(transactions, coinQuote.getCoinCode());
         final MonetaryAmount averageInvestedPrice = calculateAverageInvestedPrice(costBasis, shares);
         final MonetaryAmount currentValue = calculateCurrentValue(shares, coinQuote.getPrice());
         final MonetaryAmount differenceAbsolute = calculateDifferenceAbsolute(costBasis, currentValue);
@@ -69,7 +64,7 @@ public class PortfolioStatisticsServiceImpl implements PortfolioStatisticsServic
         return CoinPortfolioStatisticsDTO.builder()
             .coinCode(coinQuote.getCoinCode())
             .coinName(coinQuote.getCoinName())
-            .currentMarketPrice(currentMarketPrice)
+            .currentMarketPrice(coinQuote.getPrice())
             .shares(shares)
             .costBasis(costBasis)
             .averageInvestedPrice(averageInvestedPrice)
@@ -84,6 +79,9 @@ public class PortfolioStatisticsServiceImpl implements PortfolioStatisticsServic
     }
 
     private MonetaryAmount calculateAverageInvestedPrice(final MonetaryAmount costBasis, final BigDecimal shares) {
+        if (shares.compareTo(BigDecimal.ZERO) == 0) {
+            return costBasis;
+        }
         return costBasis.divide(shares);
     }
 
@@ -92,6 +90,10 @@ public class PortfolioStatisticsServiceImpl implements PortfolioStatisticsServic
     }
 
     private BigDecimal calculateDifferencePercentage(final MonetaryAmount costBasis, final MonetaryAmount currentValue) {
+        if (costBasis.isZero()) {
+            return BigDecimal.ZERO;
+        }
+
         final double cost = costBasis.getNumber().doubleValue();
         final double current = currentValue.getNumber().doubleValue();
         final double differencePercentage = (current - cost) / cost;

@@ -9,7 +9,7 @@ public interface TransactionService {
 
     List<Transaction> getAll();
 
-    MonetaryAmount calculateCostBasis(List<Transaction> transactions);
+    MonetaryAmount calculateCostBasis(List<Transaction> transactions, String coinCode);
 
-    BigDecimal calculateShares(List<Transaction> transactions);
+    BigDecimal calculateShares(List<Transaction> transactions, String coinCode);
 }
