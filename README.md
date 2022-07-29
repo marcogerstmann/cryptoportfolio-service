@@ -19,13 +19,17 @@ Backend for the crypto portfolio app.
 1. In the CLI navigate to root folder of this project
 2. Run `docker-compose -f docker-compose.develop.yml up`
 
-### Run all tests
+### Use recommended SDK versions
 
-If SDKMAN is installed on the machine, run the following to switch to the right Java version:
+See the recommended versions of the SDKs in file `.sdkmanrc`.
+
+If SDKMAN is installed on the machine, run the following to switch to the right versions:
 
 ```
 sdk env
 ```
+
+### Run all tests
 
 To execute the tests, run:
 
