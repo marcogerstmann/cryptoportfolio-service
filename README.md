@@ -30,6 +30,12 @@ sdk env
 To execute the tests, run:
 
 ```
+gradle clean test
+```
+
+or
+
+```
 ./gradlew clean test
 ```
 
